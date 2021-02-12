@@ -28,17 +28,13 @@ export class Read {
     }
 
     floatArray(length: number): Float32Array {
-        const arr = new Float32Array(
-            this._byteSet.buffer.slice(this._byteSet.position, this._byteSet.position + length)
+        const slice = this._byteSet.buffer.buffer.slice(
+            this._byteSet.position,
+            this._byteSet.position + length * 4
         );
-        this._byteSet.position += length;
+        const arr = new Float32Array(slice, 0, length);
+        this._byteSet.position += length * 4;
         return arr;
-        /*return (
-            this._byteSet.buffer[this._byteSet.position++] * 16777216 +
-            this._byteSet.buffer[this._byteSet.position++] * 65536 +
-            this._byteSet.buffer[this._byteSet.position++] * 256 +
-            this._byteSet.buffer[this._byteSet.position++]
-        );*/
     }
 
     string(): string {
