@@ -5,13 +5,15 @@ export class ByteSet {
     private _buffer: Uint8Array;
     private _capacity: number;
     private _position: number;
+    private _order: string;
 
-    public readonly write: Write = new Write(this);
-    public readonly read: Read = new Read(this);
+    readonly write: Write = new Write(this);
+    readonly read: Read = new Read(this);
 
-    constructor(capacity: number = 0) {
+    constructor(capacity: number = 0, order: "little" = "little") {
         this._capacity = capacity;
         this._position = 0;
+        this._order = order;
         this._buffer = new Uint8Array(capacity);
     }
 
@@ -36,6 +38,10 @@ export class ByteSet {
 
     get length(): number {
         return this._buffer.length;
+    }
+
+    get order(): string {
+        return this._order;
     }
 
     static from(buffer: Uint8Array | ArrayBuffer): ByteSet {

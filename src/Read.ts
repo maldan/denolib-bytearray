@@ -12,19 +12,53 @@ export class Read {
     }
 
     uint16(): number {
-        return (
-            this._byteSet.buffer[this._byteSet.position++] * 256 +
-            this._byteSet.buffer[this._byteSet.position++]
-        );
+        if (this._byteSet.order === "little") {
+            return (
+                this._byteSet.buffer[this._byteSet.position++] +
+                this._byteSet.buffer[this._byteSet.position++] * 256
+            );
+        } else throw new Error(`Not supported yet`);
     }
 
     uint32(): number {
-        return (
-            this._byteSet.buffer[this._byteSet.position++] * 16777216 +
-            this._byteSet.buffer[this._byteSet.position++] * 65536 +
-            this._byteSet.buffer[this._byteSet.position++] * 256 +
-            this._byteSet.buffer[this._byteSet.position++]
+        if (this._byteSet.order === "little") {
+            return (
+                this._byteSet.buffer[this._byteSet.position++] +
+                this._byteSet.buffer[this._byteSet.position++] * 256 +
+                this._byteSet.buffer[this._byteSet.position++] * 65536 +
+                this._byteSet.buffer[this._byteSet.position++] * 16777216
+            );
+        } else throw new Error(`Not supported yet`);
+    }
+
+    uint8Array(length: number): Uint8Array {
+        const slice = this._byteSet.buffer.buffer.slice(
+            this._byteSet.position,
+            this._byteSet.position + length
         );
+        this._byteSet.position += length;
+        return new Uint8Array(slice);
+    }
+
+    uint16Array(length: number): Uint16Array {
+        const slice = this._byteSet.buffer.buffer.slice(
+            this._byteSet.position,
+            this._byteSet.position + length * 2
+        );
+        const arr = new Uint16Array(slice, 0, length);
+        this._byteSet.position += length * 2;
+        return arr;
+    }
+
+    int16Array(length: number): Int16Array {
+        const slice = this._byteSet.buffer.buffer.slice(
+            this._byteSet.position,
+            this._byteSet.position + length * 2
+        );
+
+        // const arr = new Int16Array(slice, 0, length);
+        this._byteSet.position += length * 2;
+        return new Int16Array(slice, 0, length);
     }
 
     floatArray(length: number): Float32Array {

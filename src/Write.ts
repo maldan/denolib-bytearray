@@ -1,5 +1,8 @@
 import { ByteSet } from "./ByteSet.ts";
 
+// deno-lint-ignore camelcase
+type Type_LengthType = "none" | "uint8" | "uint16" | "uint32";
+
 export class Write {
     private _byteSet: ByteSet;
     private _tempFloatArray: Float32Array = new Float32Array(1);
@@ -8,15 +11,56 @@ export class Write {
         this._byteSet = byteSet;
     }
 
-    uint8Array(array: Uint8Array): Write {
+    uint8Array(array: Uint8Array, lengthType: Type_LengthType = "none"): Write {
+        if (lengthType === "uint8") {
+            this.uint8(array.length);
+        }
+        if (lengthType === "uint16") {
+            this.uint16(array.length);
+        }
+        if (lengthType === "uint32") {
+            this.uint32(array.length);
+        }
         for (let i = 0; i < array.length; i++) {
             this.uint8(array[i]);
         }
         return this;
     }
 
-    floatArray(array: Float32Array): Write {
-        this.uint8Array(new Uint8Array(array.buffer));
+    uint16Array(array: Uint16Array, lengthType: Type_LengthType = "none"): Write {
+        if (lengthType === "uint8") {
+            this.uint8(array.length);
+        }
+        if (lengthType === "uint16") {
+            this.uint16(array.length);
+        }
+        if (lengthType === "uint32") {
+            this.uint32(array.length);
+        }
+        for (let i = 0; i < array.length; i++) {
+            this.uint16(array[i]);
+        }
+        return this;
+    }
+
+    int16Array(array: Int16Array, lengthType: Type_LengthType = "none"): Write {
+        if (lengthType === "uint8") {
+            this.uint8(array.length);
+        }
+        if (lengthType === "uint16") {
+            this.uint16(array.length);
+        }
+        if (lengthType === "uint32") {
+            this.uint32(array.length);
+        }
+        for (let i = 0; i < array.length; i++) {
+            this.int16(array[i]);
+        }
+        return this;
+    }
+
+    floatArray(array: Float32Array, lengthType: Type_LengthType = "none"): Write {
+        this.uint8Array(new Uint8Array(array.buffer), lengthType);
         return this;
     }
 
@@ -39,8 +83,25 @@ export class Write {
         }
 
         // Write to buffer
-        this._byteSet.buffer[this._byteSet.position++] = number >> 8;
-        this._byteSet.buffer[this._byteSet.position++] = number & 0xff;
+        if (this._byteSet.order === "little") {
+            this._byteSet.buffer[this._byteSet.position++] = number & 0xff;
+            this._byteSet.buffer[this._byteSet.position++] = number >> 8;
+        }
+
+        return this;
+    }
+
+    int16(number: number): Write {
+        // Check
+        if (number > 32768 || number < -32767) {
+            throw new Error(`Short can't be > 65535`);
+        }
+
+        // Write to buffer
+        if (this._byteSet.order === "little") {
+            this._byteSet.buffer[this._byteSet.position++] = number & 0xff;
+            this._byteSet.buffer[this._byteSet.position++] = number >> 8;
+        }
 
         return this;
     }
@@ -52,10 +113,12 @@ export class Write {
         }
 
         // Write to buffer
-        this._byteSet.buffer[this._byteSet.position++] = number >> 24;
-        this._byteSet.buffer[this._byteSet.position++] = (number >> 16) & 0xff;
-        this._byteSet.buffer[this._byteSet.position++] = (number >> 8) & 0xff;
-        this._byteSet.buffer[this._byteSet.position++] = number & 0xff;
+        if (this._byteSet.order === "little") {
+            this._byteSet.buffer[this._byteSet.position++] = number & 0xff;
+            this._byteSet.buffer[this._byteSet.position++] = (number >> 8) & 0xff;
+            this._byteSet.buffer[this._byteSet.position++] = (number >> 16) & 0xff;
+            this._byteSet.buffer[this._byteSet.position++] = number >> 24;
+        }
 
         return this;
     }
