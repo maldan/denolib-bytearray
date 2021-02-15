@@ -24,21 +24,15 @@ export class Write {
         }
     }
 
-    byte(val: number) {
-        for (let i = 7; i >= 0; i--) {
-            this.bit((val & Math.pow(2, i)) >> i);
-        }
+    uint8(val: number) {
+        this.number(val, 8);
     }
 
-    short(val: number) {
-        for (let i = 15; i >= 0; i--) {
-            this.bit((val & Math.pow(2, i)) >> i);
-        }
+    uint16(val: number) {
+        this.number(val, 16);
     }
 
-    int(val: number) {
-        for (let i = 31; i >= 0; i--) {
-            this.bit((val & Math.pow(2, i)) >> i);
-        }
+    uint32(val: number) {
+        this.number(val, 32);
     }
 }

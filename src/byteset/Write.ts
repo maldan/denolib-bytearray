@@ -66,9 +66,9 @@ export class Write {
 
     uint8(number: number): Write {
         // Check
-        if (number > 255 || number < 0) {
+        /*if (number > 255 || number < 0) {
             throw new Error(`Byte can't be > 255`);
-        }
+        }*/
 
         // Write to buffer
         this._byteSet.buffer[this._byteSet.position++] = number;
@@ -78,9 +78,9 @@ export class Write {
 
     uint16(number: number): Write {
         // Check
-        if (number > 65535 || number < 0) {
+        /*if (number > 65535 || number < 0) {
             throw new Error(`Short can't be > 65535`);
-        }
+        }*/
 
         // Write to buffer
         if (this._byteSet.order === "little") {
@@ -93,9 +93,9 @@ export class Write {
 
     int16(number: number): Write {
         // Check
-        if (number > 32768 || number < -32767) {
+        /*if (number > 32768 || number < -32767) {
             throw new Error(`Short can't be > 65535`);
-        }
+        }*/
 
         // Write to buffer
         if (this._byteSet.order === "little") {
@@ -108,9 +108,9 @@ export class Write {
 
     uint32(number: number): Write {
         // Check
-        if (number > 4294967295 || number < 0) {
+        /*if (number > 4294967295 || number < 0) {
             throw new Error(`Int can't be > 4294967295`);
-        }
+        }*/
 
         // Write to buffer
         if (this._byteSet.order === "little") {
