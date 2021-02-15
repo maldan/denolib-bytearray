@@ -1,4 +1,4 @@
-# The Library for works with bytes and bits
+# Byte array module for deno for convenient work with bytes and bits.
 
 ---
 
@@ -6,6 +6,12 @@
 Currently this version supports only little endian bytes order.
 
 ---
+
+## How to use
+
+```ts
+import { ByteSet } from "";
+```
 
 ## ByteSet
 
