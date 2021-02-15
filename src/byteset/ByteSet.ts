@@ -1,6 +1,13 @@
 import { Write } from "./Write.ts";
 import { Read } from "./Read.ts";
 
+export enum LengthType {
+    None = "none",
+    Uint8 = "uint8",
+    Uint16 = "uint16",
+    Uint32 = "uint32",
+}
+
 /**
  * This is wrapper for Uint8Array for better work with bytes. ByteSet
  * can't be expanded at runtime and always has fixed size. But you
