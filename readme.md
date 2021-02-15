@@ -87,7 +87,7 @@ If you want to store length info to automatically reads it later you can pass le
 
 ```ts
 // Create set
-const a = new ByteSet(1 + 4); // length info + string
+const a = new ByteSet(1 + 3); // length info + string
 a.write.string("Hi!", LengthType.Uint8);
 a.position = 0;
 
