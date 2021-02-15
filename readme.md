@@ -21,7 +21,7 @@ Go here - https://doc.deno.land/https/deno.land/x/bytes/mod.ts
 import { ByteSet, LengthType } from "https://deno.land/x/bytes/mod.ts";
 
 // Specific version
-import { ByteSet, LengthType } from "https://deno.land/x/bytes@1.0.1/mod.ts";
+import { ByteSet, LengthType } from "https://deno.land/x/bytes@1.0.2/mod.ts";
 ```
 
 ## Example for ByteSet
