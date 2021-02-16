@@ -44,6 +44,16 @@ Deno.test("float64Array", () => {
     assertEquals(a[1], 4.5);
 });
 
+Deno.test("uint16Array", () => {
+    const b = new ByteSet(4);
+    b.write.uint16(512);
+    b.write.uint16(2048);
+    b.position = 0;
+    const a = b.read.int16Array(2);
+    assertEquals(512, a[0]);
+    assertEquals(2048, a[1]);
+});
+
 Deno.test("int16Array", () => {
     const b = new ByteSet(4);
     b.write.int16Array(new Int16Array([512, 2048]));

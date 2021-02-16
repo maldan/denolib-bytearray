@@ -34,7 +34,7 @@ export class ByteSet {
      * @param {number} capacity - The size of array
      * @param {string} order - Endiand order of bytes. The values "little" or "big"
      */
-    constructor(capacity: number = 0, order: "little" = "little") {
+    constructor(capacity: number = 0, order: "little" | "big" = "little") {
         this._capacity = capacity;
         this._position = 0;
         this._order = order;
@@ -93,11 +93,11 @@ export class ByteSet {
      * Create new ByteSet from passed buffer
      * @param {Uint8Array | ArrayBuffer} buffer
      */
-    static from(buffer: Uint8Array | ArrayBuffer): ByteSet {
+    static from(buffer: Uint8Array | ArrayBuffer, order: "little" | "big" = "little"): ByteSet {
         if (buffer instanceof ArrayBuffer) {
-            return this.from(new Uint8Array(buffer));
+            return this.from(new Uint8Array(buffer), order);
         } else {
-            const temp = new ByteSet(buffer.length);
+            const temp = new ByteSet(buffer.length, order);
             temp.buffer = buffer;
             return temp;
         }

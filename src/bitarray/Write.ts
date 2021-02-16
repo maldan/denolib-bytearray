@@ -1,15 +1,15 @@
-import { BitSet } from "./BitSet.ts";
+import { BitArray } from "./BitArray.ts";
 
 export class Write {
-    private _bitSet: BitSet;
+    private _bitArray: BitArray;
 
-    constructor(bitSet: BitSet) {
-        this._bitSet = bitSet;
+    constructor(bitArray: BitArray) {
+        this._bitArray = bitArray;
     }
 
     bit(val: number) {
-        this._bitSet.buffer.push(val > 0 ? 1 : 0);
-        this._bitSet.position++;
+        this._bitArray.buffer.push(val > 0 ? 1 : 0);
+        this._bitArray.position++;
     }
 
     bits(...val: number[]) {
@@ -19,7 +19,10 @@ export class Write {
     }
 
     number(val: number, length: number) {
-        for (let i = length - 1; i >= 0; i--) {
+        /*for (let i = length - 1; i >= 0; i--) {
+            this.bit((val & Math.pow(2, i)) >> i);
+        }*/
+        for (let i = 0; i < length; i++) {
             this.bit((val & Math.pow(2, i)) >> i);
         }
     }

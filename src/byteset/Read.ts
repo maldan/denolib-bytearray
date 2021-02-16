@@ -44,7 +44,12 @@ export class Read {
                 this._byteSet.buffer[this._byteSet.position++] +
                 this._byteSet.buffer[this._byteSet.position++] * 256
             );
-        } else throw new Error(`Not supported yet`);
+        } else {
+            return (
+                this._byteSet.buffer[this._byteSet.position++] * 256 +
+                this._byteSet.buffer[this._byteSet.position++]
+            );
+        }
     }
 
     /**
