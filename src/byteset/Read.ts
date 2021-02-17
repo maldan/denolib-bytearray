@@ -1,4 +1,5 @@
-import { ByteSet, LengthType } from "./ByteSet.ts";
+import { LengthType, NumberType } from "../../mod.ts";
+import { ByteSet } from "./ByteSet.ts";
 
 export class Read {
     private _byteSet: ByteSet;
@@ -60,6 +61,25 @@ export class Read {
     }
 
     /**
+     * Reads 3 bytes from buffer and shifts position by 3. Number between 0 and 16777215.
+     */
+    uint24(): number {
+        if (this._byteSet.order === "little") {
+            return (
+                this._byteSet.buffer[this._byteSet.position++] +
+                this._byteSet.buffer[this._byteSet.position++] * 256 +
+                this._byteSet.buffer[this._byteSet.position++] * 65536
+            );
+        } else {
+            return (
+                this._byteSet.buffer[this._byteSet.position++] * 65536 +
+                this._byteSet.buffer[this._byteSet.position++] * 256 +
+                this._byteSet.buffer[this._byteSet.position++]
+            );
+        }
+    }
+
+    /**
      * Reads 4 bytes from buffer and shifts position by 4. Number between 0 and 4294967295.
      */
     uint32(): number {
@@ -70,7 +90,14 @@ export class Read {
                 this._byteSet.buffer[this._byteSet.position++] * 65536 +
                 this._byteSet.buffer[this._byteSet.position++] * 16777216
             );
-        } else throw new Error(`Not supported yet`);
+        } else {
+            return (
+                this._byteSet.buffer[this._byteSet.position++] * 16777216 +
+                this._byteSet.buffer[this._byteSet.position++] * 65536 +
+                this._byteSet.buffer[this._byteSet.position++] * 256 +
+                this._byteSet.buffer[this._byteSet.position++]
+            );
+        }
     }
 
     /**
@@ -254,6 +281,45 @@ export class Read {
             const arr = new Float64Array(slice, 0, realLength);
             this._byteSet.position += realLength * 8;
             return arr;
+        }
+    }
+
+    each(numberType: NumberType, fn: (x: number, p?: number) => void, limit = 0) {
+        let readFunction = this.uint8.bind(this);
+
+        switch (numberType) {
+            case NumberType.Uint8:
+                readFunction = this.uint8.bind(this);
+                break;
+            case NumberType.Int8:
+                readFunction = this.int8.bind(this);
+                break;
+            case NumberType.Uint16:
+                readFunction = this.uint16.bind(this);
+                break;
+            case NumberType.Int16:
+                readFunction = this.int16.bind(this);
+                break;
+            case NumberType.Uint24:
+                readFunction = this.uint24.bind(this);
+                break;
+            case NumberType.Uint32:
+                readFunction = this.uint32.bind(this);
+                break;
+            case NumberType.Int32:
+                readFunction = this.int32.bind(this);
+                break;
+            default:
+                throw new Error(`Unkown interator`);
+        }
+
+        let read = 0;
+        while (!this._byteSet.isEnd) {
+            if (limit > 0 && read++ >= limit) {
+                break;
+            }
+            const p = this._byteSet.position;
+            fn(readFunction(), p);
         }
     }
 }

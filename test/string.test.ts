@@ -1,5 +1,6 @@
 import { assertEquals, assertThrows } from "https://deno.land/std@0.86.0/testing/asserts.ts";
-import { ByteSet, LengthType } from "../src/byteset/ByteSet.ts";
+import { LengthType } from "../mod.ts";
+import { ByteSet } from "../src/byteset/ByteSet.ts";
 
 Deno.test("string 0 size", () => {
     const b = new ByteSet(0);

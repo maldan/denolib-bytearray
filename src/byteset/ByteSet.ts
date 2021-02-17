@@ -1,12 +1,6 @@
 import { Write } from "./Write.ts";
 import { Read } from "./Read.ts";
-
-export enum LengthType {
-    None = "none",
-    Uint8 = "uint8",
-    Uint16 = "uint16",
-    Uint32 = "uint32",
-}
+import { Console } from "../../deps.ts";
 
 /**
  * This is wrapper for Uint8Array for better work with bytes. ByteSet
@@ -89,6 +83,10 @@ export class ByteSet {
         return this._order;
     }
 
+    get isEnd(): boolean {
+        return this._position === this._capacity;
+    }
+
     /**
      * Create new ByteSet from passed buffer
      * @param {Uint8Array | ArrayBuffer} buffer
@@ -101,5 +99,20 @@ export class ByteSet {
             temp.buffer = buffer;
             return temp;
         }
+    }
+
+    print() {
+        let out = "| ";
+        this.buffer.forEach((x, i) => {
+            const code = ("00" + x.toString(16)).slice(-2).toUpperCase();
+            if (i === this.position) {
+                out += Console.bgRed(code) + " ";
+            } else {
+                out += code + " ";
+            }
+
+            if ((i + 1) % 16 === 0) out += "| \n| ";
+        });
+        console.log(out);
     }
 }

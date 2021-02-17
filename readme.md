@@ -1,6 +1,7 @@
 # Byte array module for deno for convenient work with bytes and bits.
 
 [![Custom badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fdeno-visualizer.danopia.net%2Fshields%2Flatest-version%2Fx%2Fbytes%2Fmod.ts)](https://doc.deno.land/https/deno.land/x/bytes/mod.ts)
+![Deno test](https://github.com/maldan/denolib-bytearray/workflows/Deno/badge.svg)
 
 ---
 
@@ -17,11 +18,7 @@ Go here - https://doc.deno.land/https/deno.land/x/bytes/mod.ts
 ## How to import
 
 ```ts
-// Latest version (I not recommended because I often make many breaking changes)
-import { ByteSet, LengthType } from "https://deno.land/x/bytes/mod.ts";
-
-// Specific version
-import { ByteSet, LengthType } from "https://deno.land/x/bytes@1.0.2/mod.ts";
+import { ByteSet, LengthType, NumberType } from "https://deno.land/x/bytes@1.0.3/mod.ts";
 ```
 
 ## Example for ByteSet
@@ -61,6 +58,7 @@ console.log(a.read.uint32()); // 100000
 
 -   uint8 / int8
 -   uint16 / int16
+-   unt24
 -   uint32 / int32
 -   float32 / float64
 -   string

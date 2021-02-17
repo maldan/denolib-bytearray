@@ -1,5 +1,6 @@
 import { assertEquals } from "https://deno.land/std@0.86.0/testing/asserts.ts";
-import { ByteSet, LengthType } from "../src/byteset/ByteSet.ts";
+import { LengthType } from "../mod.ts";
+import { ByteSet } from "../src/byteset/ByteSet.ts";
 
 Deno.test("uint8Array specific length", () => {
     const b = new ByteSet(4);

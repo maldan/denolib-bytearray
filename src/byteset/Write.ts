@@ -1,4 +1,5 @@
-import { ByteSet, LengthType } from "./ByteSet.ts";
+import { LengthType } from "../../mod.ts";
+import { ByteSet } from "./ByteSet.ts";
 
 export class Write {
     private _byteSet: ByteSet;
@@ -82,6 +83,26 @@ export class Write {
     }
 
     /**
+     * Writes a 3 bytes value and shifts position by 3. Uint24 is a number between 0 and 16777215.
+     * Same logic as uint8 for out of range numbers.
+     * @param {number} number
+     */
+    uint24(value: number): Write {
+        // Write to buffer
+        if (this._byteSet.order === "little") {
+            this._byteSet.buffer[this._byteSet.position++] = value & 0xff;
+            this._byteSet.buffer[this._byteSet.position++] = (value >> 8) & 0xff;
+            this._byteSet.buffer[this._byteSet.position++] = (value >> 16) & 0xff;
+        } else {
+            this._byteSet.buffer[this._byteSet.position++] = (value >> 16) & 0xff;
+            this._byteSet.buffer[this._byteSet.position++] = (value >> 8) & 0xff;
+            this._byteSet.buffer[this._byteSet.position++] = value & 0xff;
+        }
+
+        return this;
+    }
+
+    /**
      * Writes a 4 bytes value and shifts position by 4. Uint32 is a number between 0 and 4294967295.
      * Same logic as uint8 for out of range numbers.
      * @param {number} number
@@ -93,7 +114,12 @@ export class Write {
             this._byteSet.buffer[this._byteSet.position++] = (value >> 8) & 0xff;
             this._byteSet.buffer[this._byteSet.position++] = (value >> 16) & 0xff;
             this._byteSet.buffer[this._byteSet.position++] = value >> 24;
-        } else throw new Error(`Not supported yet`);
+        } else {
+            this._byteSet.buffer[this._byteSet.position++] = value >> 24;
+            this._byteSet.buffer[this._byteSet.position++] = (value >> 16) & 0xff;
+            this._byteSet.buffer[this._byteSet.position++] = (value >> 8) & 0xff;
+            this._byteSet.buffer[this._byteSet.position++] = value & 0xff;
+        }
 
         return this;
     }
