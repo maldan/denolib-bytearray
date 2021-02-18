@@ -284,7 +284,7 @@ export class Read {
         }
     }
 
-    each(numberType: NumberType, fn: (x: number, p?: number) => void, limit = 0) {
+    each(numberType: NumberType, fn: (x: number, p: number) => void, limit = 0) {
         let readFunction = this.uint8.bind(this);
 
         switch (numberType) {
@@ -315,11 +315,10 @@ export class Read {
 
         let read = 0;
         while (!this._byteSet.isEnd) {
-            if (limit > 0 && read++ >= limit) {
+            if (limit > 0 && read >= limit) {
                 break;
             }
-            const p = this._byteSet.position;
-            fn(readFunction(), p);
+            fn(readFunction(), read++);
         }
     }
 }
