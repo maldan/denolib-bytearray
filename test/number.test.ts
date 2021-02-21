@@ -1,5 +1,77 @@
-import { assertEquals, assertNotEquals } from "https://deno.land/std@0.86.0/testing/asserts.ts";
+import {
+    assertEquals,
+    assertNotEquals,
+    assertThrows,
+} from "https://deno.land/std@0.86.0/testing/asserts.ts";
 import { ByteSet } from "../src/byteset/ByteSet.ts";
+
+Deno.test("byte by bits", () => {
+    let b = new ByteSet(1);
+    b.write.uint8(255);
+    b.position = 0;
+    assertEquals(b.read.byteByBits(4, 4), [15, 15]);
+
+    b = new ByteSet(1);
+    b.write.uint8(31);
+    b.position = 0;
+    assertEquals(b.read.byteByBits(4, 4), [15, 1]);
+
+    b = new ByteSet(1);
+    b.write.uint8(31);
+    b.position = 0;
+    assertEquals(b.read.byteByBits(4), [15]);
+
+    b = new ByteSet(1);
+    b.write.uint8(255);
+    b.position = 0;
+    assertEquals(b.read.byteByBits(4, 4), [15, 15]);
+
+    b = new ByteSet(1);
+    b.write.uint8(237);
+    b.position = 0;
+    assertEquals(b.read.byteByBits(3, 3, 2), [5, 5, 3]);
+
+    b = new ByteSet(1);
+    b.write.uint8(255);
+    b.position = 0;
+    assertEquals(b.read.byteByBits(1, 1, 1, 1, 1, 1, 1, 1), [1, 1, 1, 1, 1, 1, 1, 1]);
+
+    b = new ByteSet(1);
+    b.write.uint8(0);
+    b.position = 0;
+    assertEquals(b.read.byteByBits(1, 1, 1, 1, 1, 1, 1, 1), [0, 0, 0, 0, 0, 0, 0, 0]);
+
+    b = new ByteSet(1);
+    b.write.uint8(85);
+    b.position = 0;
+    assertEquals(b.read.byteByBits(2, 2, 2, 2), [1, 1, 1, 1]);
+
+    b = new ByteSet(1);
+    b.write.uint8(170);
+    b.position = 0;
+    assertEquals(b.read.byteByBits(2, 2, 2, 2), [2, 2, 2, 2]);
+
+    b = new ByteSet(1);
+    b.write.uint8(237);
+    b.position = 0;
+    assertThrows(() => {
+        b.read.byteByBits(3, 3, 3); // sum can't be more than 8
+    });
+
+    b = new ByteSet(1);
+    b.write.uint8(237);
+    b.position = 0;
+    assertThrows(() => {
+        b.read.byteByBits(); // sum can't be zero or less
+    });
+
+    b = new ByteSet(1);
+    b.write.uint8(237);
+    b.position = 0;
+    assertThrows(() => {
+        b.read.byteByBits(1, 0); // invalid bit
+    });
+});
 
 Deno.test("uint8", () => {
     const b = new ByteSet(6);

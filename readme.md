@@ -1,15 +1,29 @@
-# Byte array module for deno for convenient work with bytes and bits.
+# Bytes
+
+Deno module for easy handling of bytes and bits.
 
 [![Custom badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fdeno-visualizer.danopia.net%2Fshields%2Flatest-version%2Fx%2Fbytes%2Fmod.ts)](https://doc.deno.land/https/deno.land/x/bytes/mod.ts)
 ![Deno test](https://github.com/maldan/denolib-bytearray/workflows/Deno/badge.svg)
+[![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![hits](https://hits.deltapapa.io/github/maldan/denolib-bytearray.svg)](https://hits.deltapapa.io)
+<a href="https://github.com/badges/shields/pulse" alt="Activity">
+<img src="https://img.shields.io/github/commit-activity/m/maldan/denolib-bytearray" />
+</a>
+![GitHub Repo stars](https://img.shields.io/github/stars/maldan/denolib-bytearray)
 
----
+## Roadmap
 
-**NOTE!**
-Currently this version supports only little endian bytes order. And also
-not optimized for speed.
-
----
+-   [x] Read/Write 8, 16, 24, 32 bit numbers
+-   [x] Read/Write float32, float64
+-   [x] Read/Write strings
+-   [x] Read/Write 8, 16, 32, float32, float64, arrays
+-   [x] Read/Write little endian for numbers
+-   [x] Read/Write big endian for numbers
+-   [x] Read/Write little endian for arrays
+-   [ ] Read/Write big endian for arrays
+-   [ ] BitSet class
+-   [ ] BitArray class
+-   [ ] ByteArray class - same as ByteSet but with dynamic expansion
 
 ## Full documentation
 
@@ -21,21 +35,38 @@ Go here - https://doc.deno.land/https/deno.land/x/bytes/mod.ts
 import { ByteSet, LengthType, NumberType } from "https://deno.land/x/bytes@1.0.3/mod.ts";
 ```
 
-## Example for ByteSet
+# ByteSet
 
-Creates a byteset with static size:
+It's byte array but with fixed size. Think of it as a wrapper for `Uint8Array`. If you create a new `ByteSet` from existing `Uint8Array` it won't create a copy of that array. It just wrap around. Each `ByteSet` instance has a buffer, position, order and capacity.
 
 ```ts
-const a = new ByteSet(12);
+// Buffer is some Uint8Array
+const bytes = ByteSet.from(buffer);
+
+// Write 1 byte
+bytes.write.uint8(5);
+
+console.log(buffer[0]); // 5
+
+// Technically it's almost the same as buffer[n] = 5;
+// But what if you need to store uint16 number in uint8array?
+// Will you write buffer[0] = value & 0xff; buffer[1] = value >> 8; ?
+// Or just bytes.write.uint16(16); ?
 ```
 
-Or creates from uint8array or arrayBuffer.
+## Examples
+
+### Basics
 
 ```ts
+// Creates a byteset with static size
+const a = new ByteSet(12);
+
+// Or create from existing Uint8Array or ArrayBuffer
 const b = ByteSet.from(new Uint8Array([1, 2, 3]));
 ```
 
-How to reads and writes.
+How to read and write?
 
 ```ts
 // Create set
@@ -54,47 +85,40 @@ console.log(a.read.uint16()); // 512
 console.log(a.read.uint32()); // 100000
 ```
 
-## What can I read and write?
-
--   uint8 / int8
--   uint16 / int16
--   unt24
--   uint32 / int32
--   float32 / float64
--   string
--   uint8array / int8array
--   uint16array / int16array
--   uint32array / int32array
--   float32Array / float64Array
-
-## More examples
-
 ### Strings
 
 ```ts
 // Create set
 const a = new ByteSet(3); // length of string in bytes
 a.write.string("Hi!");
+
+// Reset position for reading
 a.position = 0;
 
 // Reads 3 bytes as string
 console.log(a.read.string(3)); // Hi!
 ```
 
-If you want to store length info to automatically reads it later you can pass lengthType parameter.
+If you want to store length info to automatically reads it later you can pass `LengthType` parameter.
 
 ```ts
 // Create set
 const a = new ByteSet(1 + 3); // length info + string
 a.write.string("Hi!", LengthType.Uint8);
+
+// Reset position for reading
 a.position = 0;
 
 // The lenth is unknown for you (for example)
-// but you know that the length info is in uint8
+// but you know that the LengthType is Uint8
 console.log(a.read.string(LengthType.Uint8)); // Hi!
 ```
 
-The second parameter is LengthType. It can be None, Uint8, Uint16, Uint32. By default it's None so the length of the string can be any size. If you use Uint8 you can store up until 255 bytes string. If use Uint16 then up until 65335. When you read string you also can pass length type or specific size.
+The second parameter is `LengthType`. It can be `None`, `Uint8`, `Uint16` or `Uint32`. By default it's `None` so the length of the string can be any size but unknown for you. If you use `Uint8` you can store up until `255` bytes string. If use `Uint16` then up until `65335`. When you read string you can pass `LengthType` or specific size.
+
+Technically `LengthType` just put bytes before string that contains length of string. When you read string with `LengthType.Uint8` it will read `1` byte that contains length. Then it will read full string with that length.
+
+Note! String function will store any string as `utf-8` string. So when you read and write strings the length doesn't mean length of string it means length of bytes of that string.
 
 ### Arrays
 
@@ -104,6 +128,8 @@ You can also write and read some typed arrays. For example
 // Create set
 const b = new ByteSet(4); // because each number is 2 bytes
 b.write.int16Array(new Int16Array([512, 2048]));
+
+// Reset position for reading
 b.position = 0;
 
 const a = b.read.int16Array(2);
@@ -116,6 +142,8 @@ By default it won't store length information. If you want to store length you ca
 ```ts
 const b = new ByteSet(4);
 b.write.uint8Array(new Uint8Array([1, 2, 3]), LengthType.Uint8);
+
+// Reset position for reading
 b.position = 0;
 
 // The lenth is unknown for you (for example)
@@ -127,4 +155,26 @@ console.log(a[2]); // 3
 console.log(a.length); // 3
 ```
 
-The same logic goes for LengthType.Uint16 and LengthType.Uint32 and for other typed arrays too.
+The same logic goes for `LengthType.Uint16` and `LengthType.Uint32` and for other typed arrays too.
+
+### Other examples
+
+```ts
+const b = new ByteSet(4);
+b.write.uint8Array(new Uint8Array([1, 2, 3]));
+
+// Reset position for reading
+b.position = 0;
+
+// You can read each uint8 from current position
+b.read.each(NumberType.Uint8, (x) => {
+    console.log(x);
+});
+// It will output
+// 1
+// 2
+// 3
+// 0
+// Why zero at the end? Becase size of set is 4.
+// And we wrote only 3 numbers. By default array contains 0 values.
+```

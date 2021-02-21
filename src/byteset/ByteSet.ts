@@ -1,6 +1,5 @@
 import { Write } from "./Write.ts";
 import { Read } from "./Read.ts";
-import { Console } from "../../deps.ts";
 
 /**
  * This is wrapper for Uint8Array for better work with bytes. ByteSet
@@ -18,13 +17,14 @@ export class ByteSet {
      * Write interface
      */
     readonly write: Write = new Write(this);
+
     /**
      * Read interface
      */
     readonly read: Read = new Read(this);
 
     /**
-     *
+     * Creates new `ByteSet`
      * @param {number} capacity - The size of array
      * @param {string} order - Endiand order of bytes. The values "little" or "big"
      */
@@ -43,23 +43,25 @@ export class ByteSet {
     }
 
     /**
-     * Set new position in array. If position overflow capacity it
-     * will throw an exception.
+     * Set new position in array.
+     * If position overflow capacity it will throw an exception.
      */
     set position(val: number) {
         this._position = val;
-        if (this._position > this._capacity) throw new Error("Out of range");
+        if (this._position > this._capacity) {
+            throw new Error("Out of range");
+        }
     }
 
     /**
-     * Get raw Uint8Array buffer.
+     * Get raw `Uint8Array` buffer.
      */
     get buffer(): Uint8Array {
         return this._buffer;
     }
 
     /**
-     * Overwrites current raw buffer with new. It will reset position to 0 and
+     * Overwrites current raw buffer with new. It will reset position to `0` and
      * set new capacity based on buffer length.
      * @param {Uint8Array} buffer
      */
@@ -83,13 +85,17 @@ export class ByteSet {
         return this._order;
     }
 
+    /**
+     * Returns `true` is position reaches end.
+     */
     get isEnd(): boolean {
         return this._position === this._capacity;
     }
 
     /**
-     * Create new ByteSet from passed buffer
-     * @param {Uint8Array | ArrayBuffer} buffer
+     * Create new `ByteSet` from `Uint8Array` or `ArrayBuffer`
+     * @param {(Uint8Array | ArrayBuffer)} buffer
+     * @param {string} order - "big" or "little"
      */
     static from(buffer: Uint8Array | ArrayBuffer, order: "little" | "big" = "little"): ByteSet {
         if (buffer instanceof ArrayBuffer) {
@@ -101,17 +107,40 @@ export class ByteSet {
         }
     }
 
-    print() {
+    /**
+     * Same as common forEach function for arrays and strings.
+     * It goes for the start, read each byte but don't shift the position.
+     * @param {Function} fn
+     */
+    forEach(fn: (x: number) => void) {
+        this.buffer.forEach(fn);
+    }
+
+    /**
+     * Same as common slice function for arrays and strings.
+     * @param {number} start
+     * @param {number} end
+     */
+    slice(start: number, end?: number) {
+        return ByteSet.from(this.buffer.slice(start, end));
+    }
+
+    /**
+     * Prints the buffer in console.
+     * Each row contains max `rowSize` bytes (by default `16`) in hex.
+     * Also current position in array highlights with red color.
+     */
+    print(rowSize = 16) {
         let out = "| ";
         this.buffer.forEach((x, i) => {
             const code = ("00" + x.toString(16)).slice(-2).toUpperCase();
             if (i === this.position) {
-                out += Console.bgRed(code) + " ";
+                out += "\u001b[41m" + code + "\u001b[0m ";
             } else {
                 out += code + " ";
             }
 
-            if ((i + 1) % 16 === 0) out += "| \n| ";
+            if ((i + 1) % rowSize === 0) out += "| \n| ";
         });
         console.log(out);
     }

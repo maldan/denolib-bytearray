@@ -3,6 +3,8 @@ import { BitArray } from "../src/bitarray/BitArray.ts";
 
 Deno.test("base", () => {
     const b = new BitArray();
-    b.write.uint8(1);
-    b.write.bits(1, 1);
+    b.write.uint8(0xae);
+    assertEquals(b.buffer, [1, 0, 1, 0, 1, 1, 1, 0]);
+    b.position = 0;
+    assertEquals(b.read.uint8(), 0xae);
 });

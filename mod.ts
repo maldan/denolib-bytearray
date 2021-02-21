@@ -1,3 +1,6 @@
+/**
+ * Information about how much bytes needs for store length of array.
+ */
 export enum LengthType {
     None = "none",
     Uint8 = "uint8",
@@ -5,6 +8,11 @@ export enum LengthType {
     Uint32 = "uint32",
 }
 
+/**
+ * Contains type of a number.
+ * Is it unsigned or signed?
+ * How much bits need to represent a number?
+ */
 export enum NumberType {
     Uint8 = "uint8",
     Uint16 = "uint16",

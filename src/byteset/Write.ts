@@ -11,6 +11,7 @@ export class Write {
     /**
      * Write length info by length type
      * @param {LengthType} type
+     * @param {number} length
      */
     private lengthByType(type: LengthType, length: number) {
         if (type === LengthType.Uint8) {
@@ -40,10 +41,10 @@ export class Write {
     }
 
     /**
-     * Writes a byte and shifts position by 1. Uint8 is a number between 0 and 255.
-     * It won't throw an exception if you try to write for example 256.
+     * Writes `1` byte and shifts position by `1`. **`Uint8`** is a number between `0` and `255`.
+     * It won't throw an exception if you try to write for example `256`.
      * If you write a value larger than a byte it simply cuts it to byte.
-     * For example if you write 256 than value will be 1.
+     * For example if you write `256` than value will be `1`.
      * @param {number} value
      */
     uint8(value: number): Write {
@@ -52,7 +53,7 @@ export class Write {
     }
 
     /**
-     * Same as uint8. There is no difference. Just for convenience.
+     * Same as `uint8`. There is no difference. Just for convenience.
      * @param {number} number
      */
     int8(value: number): Write {
@@ -60,8 +61,8 @@ export class Write {
     }
 
     /**
-     * Writes a 2 bytes value and shifts position by 2. Uint16 is a number between 0 and 65535.
-     * Same logic as uint8 for out of range numbers.
+     * Writes a `2` bytes value and shifts position by `2`. **`Uint16`** is a number between `0` and `65535`.
+     * Same logic as `uint8` for out of range numbers.
      * @param {number} number
      */
     uint16(value: number): Write {
@@ -69,13 +70,16 @@ export class Write {
         if (this._byteSet.order === "little") {
             this._byteSet.buffer[this._byteSet.position++] = value & 0xff;
             this._byteSet.buffer[this._byteSet.position++] = value >> 8;
-        } else throw new Error(`Not supported yet`);
+        } else {
+            this._byteSet.buffer[this._byteSet.position++] = value >> 8;
+            this._byteSet.buffer[this._byteSet.position++] = value & 0xff;
+        }
 
         return this;
     }
 
     /**
-     * Same as uint16. There is no difference. Just for convenience.
+     * Same as `uint16`. There is no difference. Just for convenience.
      * @param {number} number
      */
     int16(value: number): Write {
@@ -83,8 +87,8 @@ export class Write {
     }
 
     /**
-     * Writes a 3 bytes value and shifts position by 3. Uint24 is a number between 0 and 16777215.
-     * Same logic as uint8 for out of range numbers.
+     * Writes a `3` bytes value and shifts position by `3`. **`Uint24`** is a number between `0` and `16777215`.
+     * Same logic as `uint8` for out of range numbers.
      * @param {number} number
      */
     uint24(value: number): Write {
@@ -103,12 +107,11 @@ export class Write {
     }
 
     /**
-     * Writes a 4 bytes value and shifts position by 4. Uint32 is a number between 0 and 4294967295.
-     * Same logic as uint8 for out of range numbers.
+     * Writes a `4` bytes value and shifts position by `4`. **`Uint32``* is a number between `0` and `4294967295`.
+     * Same logic as `uint8` for out of range numbers.
      * @param {number} number
      */
     uint32(value: number): Write {
-        // Write to buffer
         if (this._byteSet.order === "little") {
             this._byteSet.buffer[this._byteSet.position++] = value & 0xff;
             this._byteSet.buffer[this._byteSet.position++] = (value >> 8) & 0xff;
@@ -125,7 +128,7 @@ export class Write {
     }
 
     /**
-     * Same as uint32. There is no difference. Just for convenience.
+     * Same as `uint32`. There is no difference. Just for convenience.
      * @param {number} number
      */
     int32(value: number): Write {
@@ -133,7 +136,7 @@ export class Write {
     }
 
     /**
-     * Writes a float number with 4 bytes length and shifts position by 4.
+     * Writes a float number with `4` bytes length and shifts position by `4`.
      * @param {number} value
      */
     float32(value: number): Write {
@@ -142,7 +145,7 @@ export class Write {
     }
 
     /**
-     * Writes a float (double) number with 8 bytes length and shifts position by 8.
+     * Writes a `float` (double) number with `8` bytes length and shifts position by `8`.
      * @param {number} value
      */
     float64(value: number): Write {
@@ -151,11 +154,11 @@ export class Write {
     }
 
     /**
-     * Writes string. Shifts position by string length.
-     * You can write utf8 strings, the function will automatically count length in bytes.
+     * Writes `utf8` string. Shifts position by string length in bytes.
      * The second parameter means the size of length.
-     * For example a.write.string("abc", LengthType.Uint8); will put 1 byte + 3 bytes of string. So it means
-     * max length of string is 255. By default it won't store length info so string can be any length.
+     * For example `string("abc", LengthType.Uint8);` will put `1` byte + `3` bytes of string.
+     * It means the first byte (uint8) will containt length of string.
+     * By default it won't store length info so string can be any length.
      * @param {string} str
      * @param {LengthType} lengthType
      */
@@ -170,10 +173,11 @@ export class Write {
     }
 
     /**
-     * Writes Uint8Array and shifts position by array length. By default function won't store length information.
-     * But you can use second parameter for this. If you pass LengthType.Uint8 you can store up until 255 values.
-     * In this case function put byte before an array. If you pass uint16 you can store up until 65535 values and
-     * function put 2 bytes before array. The same for uint32. It means size of "length".
+     * Writes `Uint8Array` and shifts position by array length. By default function won't store length information.
+     * If you pass `LengthType.Uint8` you can store up until `255` values.
+     * In this case function put a byte before an array. If you pass `LengthType.Uint16`
+     * you can store up until `65535` values and function put `2` bytes before array.
+     * The same for `Uint32`.
      * @param {Uint8Array} array
      * @param {LengthType} lengthType
      */
@@ -186,7 +190,7 @@ export class Write {
     }
 
     /**
-     * Writes Int8Array and offsets position by array length. The same logic for second parameter as in uint8Array.
+     * Same as `Uint8Array` but for `Int8Array`.
      * @param {Int8Array} array
      * @param {LengthType} lengthType
      */
@@ -199,7 +203,7 @@ export class Write {
     }
 
     /**
-     * Writes Uint16Array and offsets position by array length * 2. The same logic for second parameter as in uint8Array.
+     * Same as `Uint8Array` but for `Uint16Array`. You need `2` bytes for each element.
      * @param {Uint16Array} array
      * @param {LengthType} lengthType
      */
@@ -212,8 +216,8 @@ export class Write {
     }
 
     /**
-     * Writes Int16Array and offsets position by array length * 2. The same logic for second parameter as in uint8Array.
-     * @param {Int16Array} array
+     * Same as `Uint8Array` but for `Int16Array`. You need `2` bytes for each element.
+     * @param {Uint16Array} array
      * @param {LengthType} lengthType
      */
     int16Array(array: Int16Array, lengthType: LengthType = LengthType.None): Write {
@@ -225,8 +229,8 @@ export class Write {
     }
 
     /**
-     * Writes Uint32Array and offset positions by array length * 4. The same logic for second parameter as in uint8Array.
-     * @param {Uint32Array} array
+     * Same as `Uint8Array` but for `Uint32Array`. You need `4` bytes for each element.
+     * @param {Uint16Array} array
      * @param {LengthType} lengthType
      */
     uint32Array(array: Uint32Array, lengthType: LengthType = LengthType.None): Write {
@@ -238,8 +242,8 @@ export class Write {
     }
 
     /**
-     * Writes Int32Array and offset positions by array length * 4. The same logic for second parameter as in uint8Array.
-     * @param {Int32Array} array
+     * Same as `Uint8Array` but for `Int32Array`. You need `4` bytes for each element.
+     * @param {Uint16Array} array
      * @param {LengthType} lengthType
      */
     int32Array(array: Int32Array, lengthType: LengthType = LengthType.None): Write {
@@ -251,8 +255,8 @@ export class Write {
     }
 
     /**
-     * Writes Float32Array and offsets position by array length * 4. The same logic for second parameter as in uint8Array.
-     * @param {Float32Array} array
+     * Same as `Uint8Array` but for `Float32Array`. You need `4` bytes for each element.
+     * @param {Uint16Array} array
      * @param {LengthType} lengthType
      */
     float32Array(array: Float32Array, lengthType: LengthType = LengthType.None): Write {
@@ -261,8 +265,8 @@ export class Write {
     }
 
     /**
-     * Writes Float64Array and offsets position by array length * 8. The same logic for second parameter as in uint8Array.
-     * @param {Float64Array} array
+     * Same as `Uint8Array` but for `Float64Array`. You need `8` bytes for each element.
+     * @param {Uint16Array} array
      * @param {LengthType} lengthType
      */
     float64Array(array: Float64Array, lengthType: LengthType = LengthType.None): Write {

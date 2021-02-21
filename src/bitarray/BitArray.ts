@@ -1,3 +1,4 @@
+import { ByteSet } from "../../mod.ts";
 import { Read } from "./Read.ts";
 import { Write } from "./Write.ts";
 
@@ -7,6 +8,10 @@ export class BitArray {
 
     readonly write: Write = new Write(this);
     readonly read: Read = new Read(this);
+
+    constructor(bits: number[] = []) {
+        this._buffer = bits;
+    }
 
     get length(): number {
         return this._buffer.length;
@@ -23,6 +28,22 @@ export class BitArray {
 
     get buffer(): number[] {
         return this._buffer;
+    }
+
+    get isEnd(): boolean {
+        return this._position === this._buffer.length;
+    }
+
+    static from(buffer: Uint8Array | ByteSet): BitArray {
+        const temp = new BitArray();
+        buffer.forEach((x) => {
+            temp.write.uint8(x);
+        });
+        return temp;
+    }
+
+    slice(start: number, end?: number) {
+        return new BitArray(this.buffer.slice(start, end));
     }
 
     toUint8Array(): Uint8Array {

@@ -47,19 +47,34 @@ Deno.test("float64Array", () => {
 
 Deno.test("uint16Array", () => {
     const b = new ByteSet(4);
-    b.write.uint16(512);
-    b.write.uint16(2048);
+    b.write.uint16Array(new Uint16Array([512, 2048]));
     b.position = 0;
-    const a = b.read.int16Array(2);
+    const a = b.read.uint16Array(2);
     assertEquals(512, a[0]);
     assertEquals(2048, a[1]);
 });
 
 Deno.test("int16Array", () => {
     const b = new ByteSet(4);
-    b.write.int16Array(new Int16Array([512, 2048]));
+    b.write.int16Array(new Int16Array([-512, -2048]));
     b.position = 0;
     const a = b.read.int16Array(2);
-    assertEquals(512, a[0]);
-    assertEquals(2048, a[1]);
+    assertEquals(a[0], -512);
+    assertEquals(a[1], -2048);
+});
+
+Deno.test("uint32Array", () => {
+    const b = new ByteSet(4);
+    b.write.uint32Array(new Uint32Array([10000000]));
+    b.position = 0;
+    const a = b.read.uint32Array(1);
+    assertEquals(a[0], 10000000);
+});
+
+Deno.test("int32Array", () => {
+    const b = new ByteSet(4);
+    b.write.int32Array(new Int32Array([-10000000]));
+    b.position = 0;
+    const a = b.read.int32Array(1);
+    assertEquals(a[0], -10000000);
 });

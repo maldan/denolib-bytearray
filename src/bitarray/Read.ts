@@ -22,10 +22,20 @@ export class Read {
 
     number(length: number): number {
         let out = 0;
-        for (let i = 0; i < length; i++) {
+        for (let i = length - 1; i >= 0; i--) {
             out += (this._bitArray.buffer[this._bitArray.position++] ?? 0) * Math.pow(2, i);
         }
         return out;
+    }
+
+    each(size: number, fn: (x: number, p: number) => void, limit = 0) {
+        let read = 0;
+        while (!this._bitArray.isEnd) {
+            if (limit > 0 && read >= limit) {
+                break;
+            }
+            fn(this.number(size), read++);
+        }
     }
 
     uint8() {
