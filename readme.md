@@ -4,7 +4,7 @@ Deno module for easy handling of bytes and bits.
 
 [![Custom badge](https://img.shields.io/endpoint?url=https%3A%2F%2Fdeno-visualizer.danopia.net%2Fshields%2Flatest-version%2Fx%2Fbytes%2Fmod.ts)](https://doc.deno.land/https/deno.land/x/bytes/mod.ts)
 ![Deno test](https://github.com/maldan/denolib-bytearray/workflows/Deno/badge.svg)
-[![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/github/license/maldan/denolib-bytearray)](https://github.com/maldan/denolib-bytearray/blob/master/LICENSE)
 [![hits](https://hits.deltapapa.io/github/maldan/denolib-bytearray.svg)](https://hits.deltapapa.io)
 <a href="https://github.com/badges/shields/pulse" alt="Activity">
 <img src="https://img.shields.io/github/commit-activity/m/maldan/denolib-bytearray" />
