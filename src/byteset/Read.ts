@@ -1,4 +1,4 @@
-import { LengthType, NumberType } from "../../mod.ts";
+import { Endianness, LengthType, NumberType } from "../../mod.ts";
 import { ByteSet } from "./ByteSet.ts";
 
 export class Read {
@@ -76,7 +76,7 @@ export class Read {
      * **`Uint16`** is a number between `0` and `65535`.
      */
     uint16(): number {
-        if (this._byteSet.order === "little") {
+        if (this._byteSet.endianness === Endianness.LE) {
             return (
                 this._byteSet.buffer[this._byteSet.position++] +
                 this._byteSet.buffer[this._byteSet.position++] * 256
@@ -103,7 +103,7 @@ export class Read {
      * Often used for rgb colors. So I think there is no point for **`Int24`**.
      */
     uint24(): number {
-        if (this._byteSet.order === "little") {
+        if (this._byteSet.endianness === Endianness.LE) {
             return (
                 this._byteSet.buffer[this._byteSet.position++] +
                 this._byteSet.buffer[this._byteSet.position++] * 256 +
@@ -123,7 +123,7 @@ export class Read {
      * **`Uint32`** is a number between `0` and `4294967295`.
      */
     uint32(): number {
-        if (this._byteSet.order === "little") {
+        if (this._byteSet.endianness === Endianness.LE) {
             return (
                 this._byteSet.buffer[this._byteSet.position++] +
                 this._byteSet.buffer[this._byteSet.position++] * 256 +

@@ -1,5 +1,6 @@
-import { Write } from "./Write.ts";
 import { Read } from "./Read.ts";
+import { Write } from "./Write.ts";
+import { Endianness } from "../../mod.ts";
 
 /**
  * This is wrapper for Uint8Array for better work with bytes. ByteSet
@@ -8,10 +9,10 @@ import { Read } from "./Read.ts";
  * try to write more data than ByteSet capacity has.
  */
 export class ByteSet {
-    private _buffer: Uint8Array;
-    private _capacity: number;
-    private _position: number;
-    private _order: string;
+    protected _buffer: Uint8Array;
+    protected _capacity: number;
+    protected _position: number;
+    protected _endianness: Endianness;
 
     /**
      * Write interface
@@ -25,25 +26,25 @@ export class ByteSet {
 
     /**
      * Creates new `ByteSet`
-     * @param {number} capacity - The size of array
-     * @param {string} order - Endiand order of bytes. The values "little" or "big"
+     * @param {number} capacity - The size of bufer
+     * @param {Endianness} endianness - Endiand order of bytes. The values "little" or "big"
      */
-    constructor(capacity: number = 0, order: "little" | "big" = "little") {
+    constructor(capacity: number = 0, endianness: Endianness = Endianness.LE) {
         this._capacity = capacity;
         this._position = 0;
-        this._order = order;
+        this._endianness = endianness;
         this._buffer = new Uint8Array(capacity);
     }
 
     /**
-     * Get current position in array
+     * Get current position in buffer
      */
     get position(): number {
         return this._position;
     }
 
     /**
-     * Set new position in array.
+     * Set new position in buffer.
      * If position overflow capacity it will throw an exception.
      */
     set position(val: number) {
@@ -75,14 +76,21 @@ export class ByteSet {
      * Get length/capacity of this array.
      */
     get length(): number {
-        return this._buffer.length;
+        return this._capacity;
+    }
+
+    /**
+     * Get current capacity
+     */
+    get capacity(): number {
+        return this._capacity;
     }
 
     /**
      * Get current bytes endian
      */
-    get order(): string {
-        return this._order;
+    get endianness(): Endianness {
+        return this._endianness;
     }
 
     /**
@@ -97,14 +105,24 @@ export class ByteSet {
      * @param {(Uint8Array | ArrayBuffer)} buffer
      * @param {string} order - "big" or "little"
      */
-    static from(buffer: Uint8Array | ArrayBuffer, order: "little" | "big" = "little"): ByteSet {
+    static from(buffer: Uint8Array | ArrayBuffer, endianness: Endianness = Endianness.LE): ByteSet {
         if (buffer instanceof ArrayBuffer) {
-            return this.from(new Uint8Array(buffer), order);
+            return this.from(new Uint8Array(buffer), endianness);
         } else {
-            const temp = new ByteSet(buffer.length, order);
+            const temp = new ByteSet(buffer.length, endianness);
             temp.buffer = buffer;
             return temp;
         }
+    }
+
+    /**
+     * Set byte in buffer at position. It's the same as buffer[0] = 5;
+     * You don't need this method, it's for inner functional.
+     * @param {number} position
+     * @param {number} value
+     */
+    setValue(position: number, value: number) {
+        this._buffer[position] = value;
     }
 
     /**
@@ -122,7 +140,7 @@ export class ByteSet {
      * @param {number} end
      */
     slice(start: number, end?: number) {
-        return ByteSet.from(this.buffer.slice(start, end));
+        return ByteSet.from(this.buffer.slice(start, end), this.endianness);
     }
 
     /**

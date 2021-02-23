@@ -1,5 +1,17 @@
 # Changed Log
 
+## [1.0.4] - 2021-02-23
+
+### Changed
+
+-   Changed `order` parameter to `endianess` in `ByteSet`
+-   Changed `order` type from `string` to `Endianness`
+
+### Added
+
+-   Added `ByteArray` class. Is the same as `ByteSet` but has dynamic size. It's good for
+    write-only operations.
+
 ## [1.0.3] - 2021-02-18
 
 ### Changed

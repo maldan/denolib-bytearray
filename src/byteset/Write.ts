@@ -1,4 +1,4 @@
-import { LengthType } from "../../mod.ts";
+import { Endianness, LengthType } from "../../mod.ts";
 import { ByteSet } from "./ByteSet.ts";
 
 export class Write {
@@ -48,7 +48,8 @@ export class Write {
      * @param {number} value
      */
     uint8(value: number): Write {
-        this._byteSet.buffer[this._byteSet.position++] = value;
+        const p = this._byteSet.position++;
+        this._byteSet.setValue(p, value);
         return this;
     }
 
@@ -66,13 +67,16 @@ export class Write {
      * @param {number} number
      */
     uint16(value: number): Write {
+        const p1 = this._byteSet.position++;
+        const p2 = this._byteSet.position++;
+
         // Write to buffer
-        if (this._byteSet.order === "little") {
-            this._byteSet.buffer[this._byteSet.position++] = value & 0xff;
-            this._byteSet.buffer[this._byteSet.position++] = value >> 8;
+        if (this._byteSet.endianness === Endianness.LE) {
+            this._byteSet.setValue(p1, value & 0xff);
+            this._byteSet.setValue(p2, value >> 8);
         } else {
-            this._byteSet.buffer[this._byteSet.position++] = value >> 8;
-            this._byteSet.buffer[this._byteSet.position++] = value & 0xff;
+            this._byteSet.setValue(p1, value >> 8);
+            this._byteSet.setValue(p2, value & 0xff);
         }
 
         return this;
@@ -92,15 +96,19 @@ export class Write {
      * @param {number} number
      */
     uint24(value: number): Write {
+        const p1 = this._byteSet.position++;
+        const p2 = this._byteSet.position++;
+        const p3 = this._byteSet.position++;
+
         // Write to buffer
-        if (this._byteSet.order === "little") {
-            this._byteSet.buffer[this._byteSet.position++] = value & 0xff;
-            this._byteSet.buffer[this._byteSet.position++] = (value >> 8) & 0xff;
-            this._byteSet.buffer[this._byteSet.position++] = (value >> 16) & 0xff;
+        if (this._byteSet.endianness === Endianness.LE) {
+            this._byteSet.setValue(p1, value & 0xff);
+            this._byteSet.setValue(p2, (value >> 8) & 0xff);
+            this._byteSet.setValue(p3, (value >> 16) & 0xff);
         } else {
-            this._byteSet.buffer[this._byteSet.position++] = (value >> 16) & 0xff;
-            this._byteSet.buffer[this._byteSet.position++] = (value >> 8) & 0xff;
-            this._byteSet.buffer[this._byteSet.position++] = value & 0xff;
+            this._byteSet.setValue(p1, (value >> 16) & 0xff);
+            this._byteSet.setValue(p2, (value >> 8) & 0xff);
+            this._byteSet.setValue(p3, value & 0xff);
         }
 
         return this;
@@ -112,16 +120,21 @@ export class Write {
      * @param {number} number
      */
     uint32(value: number): Write {
-        if (this._byteSet.order === "little") {
-            this._byteSet.buffer[this._byteSet.position++] = value & 0xff;
-            this._byteSet.buffer[this._byteSet.position++] = (value >> 8) & 0xff;
-            this._byteSet.buffer[this._byteSet.position++] = (value >> 16) & 0xff;
-            this._byteSet.buffer[this._byteSet.position++] = value >> 24;
+        const p1 = this._byteSet.position++;
+        const p2 = this._byteSet.position++;
+        const p3 = this._byteSet.position++;
+        const p4 = this._byteSet.position++;
+
+        if (this._byteSet.endianness === Endianness.LE) {
+            this._byteSet.setValue(p1, value & 0xff);
+            this._byteSet.setValue(p2, (value >> 8) & 0xff);
+            this._byteSet.setValue(p3, (value >> 16) & 0xff);
+            this._byteSet.setValue(p4, value >> 24);
         } else {
-            this._byteSet.buffer[this._byteSet.position++] = value >> 24;
-            this._byteSet.buffer[this._byteSet.position++] = (value >> 16) & 0xff;
-            this._byteSet.buffer[this._byteSet.position++] = (value >> 8) & 0xff;
-            this._byteSet.buffer[this._byteSet.position++] = value & 0xff;
+            this._byteSet.setValue(p1, value >> 24);
+            this._byteSet.setValue(p2, (value >> 16) & 0xff);
+            this._byteSet.setValue(p3, (value >> 8) & 0xff);
+            this._byteSet.setValue(p4, value & 0xff);
         }
 
         return this;
@@ -273,4 +286,23 @@ export class Write {
         this.uint8Array(new Uint8Array(array.buffer), lengthType);
         return this;
     }
+
+    /*putUInt64(number: number) {
+        const big = ~~(number / 0x0100000000);
+        const low = number % 0x0100000000;
+
+        if (this._order === "big") {
+            this.putUInt32(big);
+            this.putUInt32(low);
+        } else {
+            this.putUInt32(low);
+            this.putUInt32(big);
+        }
+    }
+
+    getUInt64() {
+        let l = this.getUInt32();
+        let h = this.getUInt32();
+        return h + l * 0x0100000000;
+    }*/
 }

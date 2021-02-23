@@ -23,5 +23,20 @@ export enum NumberType {
     Int32 = "int32",
 }
 
+/**
+ * Order of bytes
+ */
+export enum Endianness {
+    /**
+     * Big Endian
+     */
+    BE = "big",
+    /**
+     * Little Endian
+     */
+    LE = "little",
+}
+
 export * from "./src/byteset/ByteSet.ts";
+export * from "./src/bytearray/ByteArray.ts";
 export * from "./src/bitarray/BitArray.ts";
