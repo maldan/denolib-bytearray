@@ -23,7 +23,7 @@ Deno module for easy handling of bytes and bits.
 -   [ ] Read/Write big endian for arrays
 -   [ ] BitSet class
 -   [ ] BitArray class
--   [ ] ByteArray class - same as ByteSet but with dynamic expansion
+-   [x] ByteArray class - same as ByteSet but with dynamic expansion
 
 ## Full documentation
 
@@ -37,7 +37,10 @@ import { ByteSet, LengthType, NumberType } from "https://deno.land/x/bytes@1.0.3
 
 # ByteSet
 
-It's byte array but with fixed size. Think of it as a wrapper for `Uint8Array`. If you create a new `ByteSet` from existing `Uint8Array` it won't create a copy of that array. It just wrap around. Each `ByteSet` instance has a buffer, position, order and capacity.
+It's byte array but with fixed size. Think of it as a wrapper for `Uint8Array`.
+If you create a new `ByteSet` from existing `Uint8Array` it won't create a copy
+of that array. It just wrap around. Each `ByteSet` instance has a buffer,
+position, order and capacity.
 
 ```ts
 // Buffer is some Uint8Array
@@ -99,7 +102,8 @@ a.position = 0;
 console.log(a.read.string(3)); // Hi!
 ```
 
-If you want to store length info to automatically reads it later you can pass `LengthType` parameter.
+If you want to store length info to automatically reads it later you can pass
+`LengthType` parameter.
 
 ```ts
 // Create set
@@ -114,11 +118,19 @@ a.position = 0;
 console.log(a.read.string(LengthType.Uint8)); // Hi!
 ```
 
-The second parameter is `LengthType`. It can be `None`, `Uint8`, `Uint16` or `Uint32`. By default it's `None` so the length of the string can be any size but unknown for you. If you use `Uint8` you can store up until `255` bytes string. If use `Uint16` then up until `65335`. When you read string you can pass `LengthType` or specific size.
+The second parameter is `LengthType`. It can be `None`, `Uint8`, `Uint16` or
+`Uint32`. By default it's `None` so the length of the string can be any size but
+unknown for you. If you use `Uint8` you can store up until `255` bytes string.
+If use `Uint16` then up until `65335`. When you read string you can pass
+`LengthType` or specific size.
 
-Technically `LengthType` just put bytes before string that contains length of string. When you read string with `LengthType.Uint8` it will read `1` byte that contains length. Then it will read full string with that length.
+Technically `LengthType` just put bytes before string that contains length of
+string. When you read string with `LengthType.Uint8` it will read `1` byte that
+contains length. Then it will read full string with that length.
 
-Note! String function will store any string as `utf-8` string. So when you read and write strings the length doesn't mean length of string it means length of bytes of that string.
+Note! String function will store any string as `utf-8` string. So when you read
+and write strings the length doesn't mean length of string it means length of
+bytes of that string.
 
 ### Arrays
 
@@ -137,7 +149,8 @@ console.log(a[0]); // 512
 console.log(a[1]); // 2048
 ```
 
-By default it won't store length information. If you want to store length you can use this.
+By default it won't store length information. If you want to store length you
+can use this.
 
 ```ts
 const b = new ByteSet(4);
@@ -155,7 +168,8 @@ console.log(a[2]); // 3
 console.log(a.length); // 3
 ```
 
-The same logic goes for `LengthType.Uint16` and `LengthType.Uint32` and for other typed arrays too.
+The same logic goes for `LengthType.Uint16` and `LengthType.Uint32` and for
+other typed arrays too.
 
 ### Other examples
 
@@ -178,3 +192,7 @@ b.read.each(NumberType.Uint8, (x) => {
 // Why zero at the end? Becase size of set is 4.
 // And we wrote only 3 numbers. By default array contains 0 values.
 ```
+
+### Have a question/suggestion/bug report?
+
+Contact me: https://t.me/maldan

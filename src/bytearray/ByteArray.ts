@@ -1,5 +1,4 @@
-import { Endianness } from "../../mod.ts";
-import { ByteSet } from "../byteset/ByteSet.ts";
+import { ByteSet, Endianness } from "../../mod.ts";
 
 /**
  * Extended version of ByteSet. The main difference

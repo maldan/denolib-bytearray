@@ -13,11 +13,11 @@ export class Read {
      * @param {string} type
      */
     private lengthByType(type: LengthType): number {
-        if (type === "uint8") {
+        if (type === LengthType.Uint8) {
             return this.uint8();
-        } else if (type === "uint16") {
+        } else if (type === LengthType.Uint16) {
             return this.uint16();
-        } else if (type === "uint32") {
+        } else if (type === LengthType.Uint32) {
             return this.uint32();
         } else throw new Error(`Unknown type`);
     }
@@ -202,23 +202,10 @@ export class Read {
      * @param {(number|LengthType)} length - How much bytes to read.
      */
     uint8Array(length: number | LengthType = LengthType.None): Uint8Array {
-        if (typeof length === "number") {
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + length
-            );
-            this._byteSet.position += length;
-            return new Uint8Array(slice);
-        } else {
-            const realLength = this.lengthByType(length);
-
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + realLength
-            );
-            this._byteSet.position += realLength;
-            return new Uint8Array(slice);
-        }
+        const realLength = typeof length === "number" ? length : this.lengthByType(length);
+        const p = this._byteSet.position;
+        this._byteSet.position += realLength;
+        return new Uint8Array(this._byteSet.buffer.buffer.slice(p, p + realLength));
     }
 
     /**
@@ -227,23 +214,10 @@ export class Read {
      * @param {(number|LengthType)} length - How much bytes to read.
      */
     int8Array(length: number | LengthType = LengthType.None): Int8Array {
-        if (typeof length === "number") {
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + length
-            );
-            this._byteSet.position += length;
-            return new Int8Array(slice);
-        } else {
-            const realLength = this.lengthByType(length);
-
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + realLength
-            );
-            this._byteSet.position += realLength;
-            return new Int8Array(slice);
-        }
+        const realLength = typeof length === "number" ? length : this.lengthByType(length);
+        const p = this._byteSet.position;
+        this._byteSet.position += realLength;
+        return new Int8Array(this._byteSet.buffer.buffer.slice(p, p + realLength));
     }
 
     /**
@@ -252,7 +226,11 @@ export class Read {
      * @param {(number|LengthType)} length - How much bytes to read.
      */
     uint16Array(length: number | LengthType = LengthType.None): Uint16Array {
-        if (typeof length === "number") {
+        const realLength = typeof length === "number" ? length : this.lengthByType(length);
+        const slice = new Uint16Array(realLength);
+        for (let i = 0; i < realLength; i++) slice[i] = this.uint16();
+        return slice;
+        /*if (typeof length === "number") {
             const slice = this._byteSet.buffer.buffer.slice(
                 this._byteSet.position,
                 this._byteSet.position + length * 2
@@ -270,7 +248,7 @@ export class Read {
             const arr = new Uint16Array(slice, 0, realLength);
             this._byteSet.position += realLength * 2;
             return arr;
-        }
+        }*/
     }
 
     /**
@@ -279,25 +257,10 @@ export class Read {
      * @param {(number|LengthType)} length - How much bytes to read.
      */
     int16Array(length: number | LengthType = LengthType.None): Int16Array {
-        if (typeof length === "number") {
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + length * 2
-            );
-
-            this._byteSet.position += length * 2;
-            return new Int16Array(slice, 0, length);
-        } else {
-            const realLength = this.lengthByType(length);
-
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + realLength * 2
-            );
-
-            this._byteSet.position += realLength * 2;
-            return new Int16Array(slice, 0, realLength);
-        }
+        const realLength = typeof length === "number" ? length : this.lengthByType(length);
+        const slice = new Int16Array(realLength);
+        for (let i = 0; i < realLength; i++) slice[i] = this.int16();
+        return slice;
     }
 
     /**
@@ -306,7 +269,12 @@ export class Read {
      * @param {(number|LengthType)} length - How much bytes to read.
      */
     uint32Array(length: number | LengthType = LengthType.None): Uint32Array {
-        if (typeof length === "number") {
+        const realLength = typeof length === "number" ? length : this.lengthByType(length);
+        const slice = new Uint32Array(realLength);
+        for (let i = 0; i < realLength; i++) slice[i] = this.uint32();
+        return slice;
+
+        /*if (typeof length === "number") {
             const slice = this._byteSet.buffer.buffer.slice(
                 this._byteSet.position,
                 this._byteSet.position + length * 4
@@ -324,7 +292,7 @@ export class Read {
             const arr = new Uint32Array(slice, 0, realLength);
             this._byteSet.position += realLength * 4;
             return arr;
-        }
+        }*/
     }
 
     /**
@@ -333,7 +301,12 @@ export class Read {
      * @param {(number|LengthType)} length - How much bytes to read.
      */
     int32Array(length: number | LengthType = LengthType.None): Int32Array {
-        if (typeof length === "number") {
+        const realLength = typeof length === "number" ? length : this.lengthByType(length);
+        const slice = new Int32Array(realLength);
+        for (let i = 0; i < realLength; i++) slice[i] = this.int32();
+        return slice;
+
+        /*if (typeof length === "number") {
             const slice = this._byteSet.buffer.buffer.slice(
                 this._byteSet.position,
                 this._byteSet.position + length * 4
@@ -351,7 +324,7 @@ export class Read {
 
             this._byteSet.position += realLength * 4;
             return new Int32Array(slice, 0, realLength);
-        }
+        }*/
     }
 
     /**
@@ -360,7 +333,19 @@ export class Read {
      * @param {(number|LengthType)} length - How much bytes to read.
      */
     float32Array(length: number | LengthType = LengthType.None): Float32Array {
-        if (typeof length === "number") {
+        const realLength = typeof length === "number" ? length : this.lengthByType(length);
+        const slice = new Float32Array(realLength);
+        const p = this._byteSet.position;
+        const dView = new DataView(this._byteSet.buffer.buffer.slice(p, p + realLength * 4));
+
+        const isLE = this._byteSet.endianness === Endianness.LE;
+        for (let i = 0; i < realLength; i++) {
+            slice[i] = dView.getFloat32(i * 4, isLE);
+        }
+        this._byteSet.position += realLength * 4;
+        return slice;
+
+        /*if (typeof length === "number") {
             const slice = this._byteSet.buffer.buffer.slice(
                 this._byteSet.position,
                 this._byteSet.position + length * 4
@@ -377,7 +362,7 @@ export class Read {
             const arr = new Float32Array(slice, 0, realLength);
             this._byteSet.position += realLength * 4;
             return arr;
-        }
+        }*/
     }
 
     /**
@@ -386,7 +371,22 @@ export class Read {
      * @param {(number|LengthType)} length - How much bytes to read.
      */
     float64Array(length: number | LengthType = LengthType.None): Float64Array {
-        if (typeof length === "number") {
+        const realLength = typeof length === "number" ? length : this.lengthByType(length);
+        const slice = new Float64Array(realLength);
+        const p = this._byteSet.position;
+        const dView = new DataView(this._byteSet.buffer.buffer.slice(p, p + realLength * 8));
+        const isLE = this._byteSet.endianness === Endianness.LE;
+        for (let i = 0; i < realLength; i++) {
+            slice[i] = dView.getFloat64(i * 8, isLE);
+        }
+        this._byteSet.position += realLength * 8;
+        return slice;
+
+        /* const realLength = typeof length === "number" ? length : this.lengthByType(length);
+        const slice = new Float64Array(realLength);
+        for (let i = 0; i < realLength; i++) slice[i] = this.float64();
+        return slice;*/
+        /*if (typeof length === "number") {
             const slice = this._byteSet.buffer.buffer.slice(
                 this._byteSet.position,
                 this._byteSet.position + length * 8
@@ -403,7 +403,7 @@ export class Read {
             const arr = new Float64Array(slice, 0, realLength);
             this._byteSet.position += realLength * 8;
             return arr;
-        }
+        }*/
     }
 
     /**

@@ -269,22 +269,37 @@ export class Write {
 
     /**
      * Same as `Uint8Array` but for `Float32Array`. You need `4` bytes for each element.
-     * @param {Uint16Array} array
+     * @param {Float32Array} array
      * @param {LengthType} lengthType
      */
     float32Array(array: Float32Array, lengthType: LengthType = LengthType.None): Write {
-        this.uint8Array(new Uint8Array(array.buffer), lengthType);
+        this.uint32Array(new Uint32Array(array.buffer), lengthType);
         return this;
     }
 
     /**
      * Same as `Uint8Array` but for `Float64Array`. You need `8` bytes for each element.
-     * @param {Uint16Array} array
+     * @param {Float64Array} array
      * @param {LengthType} lengthType
      */
     float64Array(array: Float64Array, lengthType: LengthType = LengthType.None): Write {
-        this.uint8Array(new Uint8Array(array.buffer), lengthType);
+        const l = new Uint32Array(array.buffer);
+        this.lengthByType(lengthType, array.length);
+        if (this._byteSet.endianness === Endianness.LE) {
+            for (let i = 0; i < l.length; i += 2) {
+                this.uint32(l[i]);
+                this.uint32(l[i + 1]);
+            }
+        } else {
+            for (let i = 0; i < l.length; i += 2) {
+                this.uint32(l[i + 1]);
+                this.uint32(l[i]);
+            }
+        }
         return this;
+
+        /*this.uint32Array(new Uint32Array(array.buffer), lengthType);
+        return this;*/
     }
 
     /*putUInt64(number: number) {
