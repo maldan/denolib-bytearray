@@ -6,7 +6,7 @@ Deno module for easy handling of bytes and bits.
 ![Deno test](https://github.com/maldan/denolib-bytearray/workflows/Deno/badge.svg)
 [![License](https://img.shields.io/github/license/maldan/denolib-bytearray)](https://github.com/maldan/denolib-bytearray/blob/master/LICENSE)
 [![hits](https://hits.deltapapa.io/github/maldan/denolib-bytearray.svg)](https://hits.deltapapa.io)
-<a href="https://github.com/badges/shields/pulse" alt="Activity">
+<a href="https://github.com/maldan/denolib-bytearray/pulse" alt="Activity">
 <img src="https://img.shields.io/github/commit-activity/m/maldan/denolib-bytearray" />
 </a>
 ![GitHub Repo stars](https://img.shields.io/github/stars/maldan/denolib-bytearray)
@@ -16,11 +16,11 @@ Deno module for easy handling of bytes and bits.
 -   [x] Read/Write 8, 16, 24, 32 bit numbers
 -   [x] Read/Write float32, float64
 -   [x] Read/Write strings
--   [x] Read/Write 8, 16, 32, float32, float64, arrays
+-   [x] Read/Write 8, 16, 32, float32, float64 arrays
 -   [x] Read/Write little endian for numbers
 -   [x] Read/Write big endian for numbers
 -   [x] Read/Write little endian for arrays
--   [ ] Read/Write big endian for arrays
+-   [x] Read/Write big endian for arrays
 -   [ ] BitSet class
 -   [ ] BitArray class
 -   [x] ByteArray class - same as ByteSet but with dynamic expansion

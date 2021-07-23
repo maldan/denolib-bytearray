@@ -12,7 +12,7 @@ export class ByteSet {
     protected _buffer: Uint8Array;
     protected _capacity: number;
     protected _position: number;
-    protected _endianness: Endianness;
+    endianness: Endianness;
 
     /**
      * Write interface
@@ -32,8 +32,8 @@ export class ByteSet {
     constructor(capacity: number = 0, endianness: Endianness = Endianness.LE) {
         this._capacity = capacity;
         this._position = 0;
-        this._endianness = endianness;
         this._buffer = new Uint8Array(capacity);
+        this.endianness = endianness;
     }
 
     /**
@@ -84,13 +84,6 @@ export class ByteSet {
      */
     get capacity(): number {
         return this._capacity;
-    }
-
-    /**
-     * Get current bytes endian
-     */
-    get endianness(): Endianness {
-        return this._endianness;
     }
 
     /**

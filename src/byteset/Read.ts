@@ -230,25 +230,6 @@ export class Read {
         const slice = new Uint16Array(realLength);
         for (let i = 0; i < realLength; i++) slice[i] = this.uint16();
         return slice;
-        /*if (typeof length === "number") {
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + length * 2
-            );
-            const arr = new Uint16Array(slice, 0, length);
-            this._byteSet.position += length * 2;
-            return arr;
-        } else {
-            const realLength = this.lengthByType(length);
-
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + realLength * 2
-            );
-            const arr = new Uint16Array(slice, 0, realLength);
-            this._byteSet.position += realLength * 2;
-            return arr;
-        }*/
     }
 
     /**
@@ -273,26 +254,6 @@ export class Read {
         const slice = new Uint32Array(realLength);
         for (let i = 0; i < realLength; i++) slice[i] = this.uint32();
         return slice;
-
-        /*if (typeof length === "number") {
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + length * 4
-            );
-            const arr = new Uint32Array(slice, 0, length);
-            this._byteSet.position += length * 4;
-            return arr;
-        } else {
-            const realLength = this.lengthByType(length);
-
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + realLength * 4
-            );
-            const arr = new Uint32Array(slice, 0, realLength);
-            this._byteSet.position += realLength * 4;
-            return arr;
-        }*/
     }
 
     /**
@@ -305,26 +266,6 @@ export class Read {
         const slice = new Int32Array(realLength);
         for (let i = 0; i < realLength; i++) slice[i] = this.int32();
         return slice;
-
-        /*if (typeof length === "number") {
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + length * 4
-            );
-
-            this._byteSet.position += length * 4;
-            return new Int32Array(slice, 0, length);
-        } else {
-            const realLength = this.lengthByType(length);
-
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + realLength * 4
-            );
-
-            this._byteSet.position += realLength * 4;
-            return new Int32Array(slice, 0, realLength);
-        }*/
     }
 
     /**
@@ -344,25 +285,6 @@ export class Read {
         }
         this._byteSet.position += realLength * 4;
         return slice;
-
-        /*if (typeof length === "number") {
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + length * 4
-            );
-            const arr = new Float32Array(slice, 0, length);
-            this._byteSet.position += length * 4;
-            return arr;
-        } else {
-            const realLength = this.lengthByType(length);
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + realLength * 4
-            );
-            const arr = new Float32Array(slice, 0, realLength);
-            this._byteSet.position += realLength * 4;
-            return arr;
-        }*/
     }
 
     /**
@@ -381,29 +303,6 @@ export class Read {
         }
         this._byteSet.position += realLength * 8;
         return slice;
-
-        /* const realLength = typeof length === "number" ? length : this.lengthByType(length);
-        const slice = new Float64Array(realLength);
-        for (let i = 0; i < realLength; i++) slice[i] = this.float64();
-        return slice;*/
-        /*if (typeof length === "number") {
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + length * 8
-            );
-            const arr = new Float64Array(slice, 0, length);
-            this._byteSet.position += length * 8;
-            return arr;
-        } else {
-            const realLength = this.lengthByType(length);
-            const slice = this._byteSet.buffer.buffer.slice(
-                this._byteSet.position,
-                this._byteSet.position + realLength * 8
-            );
-            const arr = new Float64Array(slice, 0, realLength);
-            this._byteSet.position += realLength * 8;
-            return arr;
-        }*/
     }
 
     /**
